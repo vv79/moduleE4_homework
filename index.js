@@ -28,21 +28,61 @@ class ElectricalAppliance {
     powerConsumption(){
         let hoursWorked = this.hoursWorked()
         if(hoursWorked){
-            let powerConsumption = this.amperage * this.voltage * hoursWorked
+            return this.amperage * this.voltage * hoursWorked
+        }
+    }
+
+    info (){
+        let powerConsumption = this.powerConsumption()
+
+        if(powerConsumption){
             console.log('Power consumption of "'+this.name+'" is: ' + powerConsumption + ' watts.')
         }
     }
 }
 
-class Computer extends ElectricalAppliance {
+class Monitor extends ElectricalAppliance {
     constructor() {
+        super('Monitor', 1, 100);
+    }
+}
+
+class Computer extends ElectricalAppliance {
+    constructor(monitor) {
         super('Computer', 2, 500);
+        this.monitor = monitor
+    }
+
+    powerOn(year, month, date, hours, minutes) {
+        super.powerOn(year, month, date, hours, minutes)
+        this.monitor.powerOn(year, month, date, hours, minutes)
+    }
+
+    powerOff(year, month, date, hours, minutes) {
+        super.powerOff(year, month, date, hours, minutes);
+        this.monitor.powerOff(year, month, date, hours, minutes)
+    }
+
+    powerConsumption(){
+        let monitorConsumption = this.monitor.powerConsumption()
+
+        return super.powerConsumption() + monitorConsumption
+    }
+
+    info(){
+        this.monitor.info()
+        super.info()
+
+        console.log('Total power consumption of "'+this.name+'" and "'+this.monitor.name+'" is: ' + this.powerConsumption() + ' watts.')
     }
 }
 
 class Refrigerator extends ElectricalAppliance {
-    constructor() {
+    constructor(height, width, depth) {
         super('Refrigerator', 2, 1000);
+        this.height = height
+        this.width = width
+        this.depth = depth
     }
 
     hoursWorked() {
@@ -50,13 +90,15 @@ class Refrigerator extends ElectricalAppliance {
     }
 }
 
-const computer = new Computer();
+const monitor = new Monitor()
 
-computer.powerOn(2023, 1, 18, 12, 0);
-computer.powerOff(2023, 1, 18, 22, 0);
+const computer = new Computer(monitor)
 
-computer.powerConsumption()
+computer.powerOn(2023, 1, 18, 12, 0)
+computer.powerOff(2023, 1, 18, 22, 0)
+
+computer.info()
 
 const refrigerator = new Refrigerator()
 
-refrigerator.powerConsumption()
+refrigerator.info()
